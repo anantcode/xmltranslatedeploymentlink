@@ -14,6 +14,7 @@ function readFiles(dirname, onFileContent, onError) {
                     return;
                 }
                 onFileContent(filename, content);
+                fs.writeFileSync("result1.json", JSON.stringify(table));
             });
         });
     });
@@ -21,16 +22,39 @@ function readFiles(dirname, onFileContent, onError) {
 
 function forEachXliffFile(filename, content) {
     console.log(filename);
-    processContent(content);
+    processContent(filename, content);
 }
 
 function handleError(err) {
     console.log(err);
 }
 
-function processContent(content) {
+let table = {};
+let key = "";
+let keyContains = "SCRIPTDEPLOYMENTLINK";
+function processContent(filename, content) {
+    let result;
+    //if (filename !== "pt_BR.xlf") return;
     var result1 = convert.xml2json(content, { compact: true, spaces: 4 });
-    console.log(result1);
+    //console.log(result1);
+    //fs.writeFileSync("temp.txt", result1);
+    let contentObj = JSON.parse(result1);
+    let arr = contentObj.xliff.file.body["trans-unit"];
+    for (let i = 0; i < arr.length; i++) {
+        let item = arr[i];
+        if (item.source._text === "E-Document Preferences") {
+            console.log(i);
+            console.log("Found E-Documents Preferencs index");
+            if (item._attributes.id.indexOf(keyContains) > -1) {
+                console.log(
+                    i + " is real winner because it contains " + keyContains
+                );
+                result = item.target._text;
+                console.log(item.target._text);
+            }
+        }
+    }
+    table[filename] = result;
 }
 
 readFiles("translated\\", forEachXliffFile, handleError);

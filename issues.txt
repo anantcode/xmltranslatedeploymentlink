@@ -1,0 +1,5 @@
+1. read file sync - write final JSON to a file - not everytime.
+2. useful logs
+3. integrate all steps
+4. parametrize by key (which string to get)
+
