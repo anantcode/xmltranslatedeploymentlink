@@ -31,7 +31,9 @@ function handleError(err) {
 
 let table = {};
 let key = "";
-let keyContains = "SCRIPTDEPLOYMENTLINK";
+//let keyContains = "SCRIPTDEPLOYMENTLINK";
+let keyContains = "CUSTOMROLE_EDOC_INBOUND_WS_ROLE|1000|ROLE";
+
 function processContent(filename, content) {
     let result;
     //if (filename !== "pt_BR.xlf") return;
@@ -42,16 +44,12 @@ function processContent(filename, content) {
     let arr = contentObj.xliff.file.body["trans-unit"];
     for (let i = 0; i < arr.length; i++) {
         let item = arr[i];
-        if (item.source._text === "E-Document Preferences") {
-            console.log(i);
-            console.log("Found E-Documents Preferencs index");
-            if (item._attributes.id.indexOf(keyContains) > -1) {
-                console.log(
-                    i + " is real winner because it contains " + keyContains
-                );
-                result = item.target._text;
-                console.log(item.target._text);
-            }
+        if (item._attributes.id.indexOf(keyContains) > -1) {
+            console.log(
+                i + " is real winner because it contains " + keyContains
+            );
+            result = item.target._text;
+            console.log(item.target._text);
         }
     }
     table[filename] = result;
